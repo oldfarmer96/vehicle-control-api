@@ -1,10 +1,6 @@
 import { PrismaPg } from '@prisma/adapter-pg';
 import 'dotenv/config';
-import {
-  Prisma,
-  PrismaClient,
-  RolSistemaWeb,
-} from 'src/generated/prisma/client';
+import { Prisma, PrismaClient, RolWeb } from 'src/generated/prisma/client';
 import bcryptjs from 'bcryptjs';
 import { Pool } from 'pg';
 
@@ -20,7 +16,7 @@ const users: Prisma.UsuarioWebCreateInput[] = [
     nombre: 'jose luis',
     apellidos: 'galindo cardenas',
     passwordHash: '123456',
-    rol: RolSistemaWeb.ADMINISTRADOR,
+    rol: RolWeb.ADMINISTRADOR,
   },
   {
     dni: '74843112',
@@ -28,7 +24,7 @@ const users: Prisma.UsuarioWebCreateInput[] = [
     nombre: 'haruhi',
     apellidos: 'suzumiya',
     passwordHash: '123456',
-    rol: RolSistemaWeb.CONSULTOR,
+    rol: RolWeb.CONSULTOR,
   },
 ];
 

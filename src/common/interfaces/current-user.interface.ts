@@ -1,7 +1,7 @@
-import { RolSistemaWeb } from 'src/generated/prisma/enums';
+import { RolWeb } from 'src/generated/prisma/enums';
 
 export interface CurrentUserI {
   id: string;
-  role: RolSistemaWeb;
+  role: RolWeb;
   userName: string;
 }
