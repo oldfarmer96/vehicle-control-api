@@ -1,0 +1,115 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+  provider     = "prisma-client"
+  output       = "../src/generated/prisma"
+  moduleFormat = "cjs"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum RolUniversitario {
+  DOCENTE
+  ALUMNO
+  ADMINISTRATIVO
+  VISITANTE
+}
+
+enum TipoEventoAcceso {
+  ENTRADA
+  SALIDA
+}
+
+enum RolSistemaWeb {
+  ADMINISTRADOR
+  CONSULTOR
+}
+
+// usuarios
+model UsuarioWeb {
+  id           String        @id @default(uuid()) @db.Uuid
+  nombre       String        @db.VarChar(50)
+  apellidos    String        @db.VarChar(50)
+  dni          String        @unique @db.VarChar(15)
+  username     String        @unique @db.VarChar(15)
+  passwordHash String
+  rol          RolSistemaWeb
+  activo       Boolean       @default(true)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([createdAt])
+}
+
+// vehiculos 
+model Vehiculo {
+  id     String  @id @default(uuid()) @db.Uuid
+  placa  String  @unique @db.VarChar(15)
+  marca  String? @db.VarChar(50)
+  modelo String? @db.VarChar(50)
+  color  String? @db.VarChar(50)
+  vin    String? @db.VarChar(50)
+  motor  String? @db.VarChar(50)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  personas      VehiculoPersona[]
+  eventosAcceso EventoAcceso[]
+
+  @@index([createdAt])
+}
+
+// personas 
+model Persona {
+  id                   String           @id @default(uuid()) @db.Uuid
+  dni                  String           @unique @db.VarChar(15)
+  nombreCompleto       String           @db.VarChar(150)
+  rol                  RolUniversitario
+  tieneAccesoPermitido Boolean          @default(true)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  vehiculos VehiculoPersona[]
+
+  @@index([nombreCompleto])
+  @@index([createdAt])
+}
+
+model VehiculoPersona {
+  id         String   @id @default(uuid()) @db.Uuid
+  vehiculoId String   @db.Uuid
+  personaId  String   @db.Uuid
+  asignadoEn DateTime @default(now())
+
+  vehiculo Vehiculo @relation(fields: [vehiculoId], references: [id], onDelete: Cascade)
+  persona  Persona  @relation(fields: [personaId], references: [id], onDelete: Cascade)
+
+  @@unique([vehiculoId, personaId])
+  @@index([vehiculoId])
+  @@index([personaId])
+  @@index([asignadoEn])
+}
+
+model EventoAcceso {
+  id           String           @id @default(uuid()) @db.Uuid
+  vehiculoId   String           @db.Uuid
+  tipoEvento   TipoEventoAcceso
+  puntoControl String           @db.VarChar(50)
+  confianzaOcr Decimal?         @db.Decimal(5, 2)
+  fechaHora    DateTime         @default(now())
+
+  vehiculo Vehiculo @relation(fields: [vehiculoId], references: [id])
+
+  @@index([vehiculoId])
+  @@index([fechaHora])
+  @@index([vehiculoId, fechaHora])
+  @@index([tipoEvento, fechaHora])
+}
