@@ -2,7 +2,7 @@ import { PrismaPg } from '@prisma/adapter-pg';
 import 'dotenv/config';
 import bcryptjs from 'bcryptjs';
 import { Pool } from 'pg';
-import { Prisma, PrismaClient, RolWeb } from '@src/generated/prisma/client';
+import { Prisma, PrismaClient, RolWeb } from '../src/generated/prisma/client';
 
 const connectionString = `${process.env.DATABASE_URL}`;
 const pool = new Pool({ connectionString });
