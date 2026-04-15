@@ -1,4 +1,4 @@
-import { RolWeb } from 'src/generated/prisma/enums';
+import { RolWeb } from '@src/generated/prisma/enums';
 
 export interface JwtPayload {
   sub: string;

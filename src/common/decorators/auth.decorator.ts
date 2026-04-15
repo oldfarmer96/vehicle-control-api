@@ -1,7 +1,7 @@
 import { applyDecorators, SetMetadata, UseGuards } from '@nestjs/common';
 import { JwtAuthGuard } from '../guards/jwt-auth.guard';
 import { RolesGuard } from '../guards/roles.guard';
-import { RolWeb } from 'src/generated/prisma/enums';
+import { RolWeb } from '@src/generated/prisma/enums';
 
 export const ROLES_KEY = 'roles';
 
