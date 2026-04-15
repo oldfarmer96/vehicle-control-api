@@ -12,11 +12,13 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     super({
       jwtFromRequest: ExtractJwt.fromExtractors([
         (request: Request) => {
-          return request?.cookies?.vehicleControlAuth;
+          const cookieName =
+            configService.get<string>('COOKIE_NAME') || 'vehicleControlAuth';
+          return request?.cookies?.[cookieName];
         },
       ]),
       ignoreExpiration: false,
-      secretOrKey: configService.get<string>('JWT_SECRET') || 'secretKey',
+      secretOrKey: configService.get('JWT_SECRET') || '1!2@3#4$5%',
     });
   }
 

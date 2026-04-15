@@ -15,11 +15,15 @@ import { Auth } from 'src/common/decorators/auth.decorator';
 @Controller('auth')
 export class AuthController {
   private readonly cookieMaxAge = 1000 * 60 * 60 * 24;
+  private readonly cookieName: string;
 
   constructor(
     private readonly authService: AuthService,
     private readonly configService: ConfigService,
-  ) {}
+  ) {
+    this.cookieName =
+      this.configService.get<string>('COOKIE_NAME') || 'vehicleControlAuth';
+  }
 
   @Post('login')
   @HttpCode(HttpStatus.OK)
@@ -32,7 +36,7 @@ export class AuthController {
   ) {
     const { result, token } = await this.authService.login(body);
 
-    res.cookie('vehicleControlAuth', token, {
+    res.cookie(this.cookieName, token, {
       httpOnly: true,
       secure: this.isProd(),
       sameSite: this.isProd() ? 'none' : 'lax',
@@ -46,7 +50,7 @@ export class AuthController {
   @Auth()
   @HttpCode(HttpStatus.OK)
   async logout(@Res({ passthrough: true }) res: Response) {
-    res.clearCookie('vehicleControlAuth', {
+    res.clearCookie(this.cookieName, {
       httpOnly: true,
       secure: this.isProd(),
       sameSite: this.isProd() ? 'none' : 'lax',
