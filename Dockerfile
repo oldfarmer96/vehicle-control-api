@@ -26,10 +26,8 @@ COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/package.json ./package.json
 COPY --from=builder /app/scripts ./scripts
 COPY --from=builder /app/prisma ./prisma
-
-RUN ls -la
-RUN ls -la scripts/ || echo "scripts/ no existe"
-RUN find . -name "docker-entrypoint.sh" 2>/dev/null || echo "No encontrado"
+COPY --from=builder /app/prisma.config.ts ./prisma.config.ts
+COPY --from=builder /app/src/generated ./src/generated
 
 RUN sed -i 's/\r$//' ./scripts/docker-entrypoint.sh && \
   chmod +x ./scripts/docker-entrypoint.sh
