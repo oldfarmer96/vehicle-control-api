@@ -3,18 +3,23 @@ import { AppModule } from './app.module';
 import { ConfigService } from '@nestjs/config';
 import cookieParser from 'cookie-parser';
 import { Logger, ValidationPipe } from '@nestjs/common';
+import helmet from 'helmet';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
     logger: ['error', 'warn', 'debug', 'log', 'fatal', 'verbose'],
   });
 
-  app.use(cookieParser());
+  app.use(helmet());
+
   const logger = new Logger('bootstrap');
   const configService = app.get(ConfigService);
 
+  const cookieSecret = configService.get('COOKIE_SECRET');
+
+  app.use(cookieParser(cookieSecret));
+
   const isProd = configService.get('NODE_ENV') === 'production';
-  const apiPrefix = configService.get<string>('API_PREFIX', 'api/v1');
   const corsOrigins = configService
     .get<string>('CORS_ORIGINS', '')
     .split(',')
@@ -32,6 +37,8 @@ async function bootstrap() {
       transform: true,
     }),
   );
+
+  const apiPrefix = configService.get<string>('API_PREFIX', 'api/v1');
 
   app.setGlobalPrefix(apiPrefix, {
     exclude: ['health'],
