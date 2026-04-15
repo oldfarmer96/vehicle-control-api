@@ -41,11 +41,11 @@ export type StringFilter<$PrismaModel = never> = {
   not?: Prisma.NestedStringFilter<$PrismaModel> | string
 }
 
-export type EnumRolSistemaWebFilter<$PrismaModel = never> = {
-  equals?: $Enums.RolSistemaWeb | Prisma.EnumRolSistemaWebFieldRefInput<$PrismaModel>
-  in?: $Enums.RolSistemaWeb[] | Prisma.ListEnumRolSistemaWebFieldRefInput<$PrismaModel>
-  notIn?: $Enums.RolSistemaWeb[] | Prisma.ListEnumRolSistemaWebFieldRefInput<$PrismaModel>
-  not?: Prisma.NestedEnumRolSistemaWebFilter<$PrismaModel> | $Enums.RolSistemaWeb
+export type EnumRolWebFilter<$PrismaModel = never> = {
+  equals?: $Enums.RolWeb | Prisma.EnumRolWebFieldRefInput<$PrismaModel>
+  in?: $Enums.RolWeb[] | Prisma.ListEnumRolWebFieldRefInput<$PrismaModel>
+  notIn?: $Enums.RolWeb[] | Prisma.ListEnumRolWebFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumRolWebFilter<$PrismaModel> | $Enums.RolWeb
 }
 
 export type BoolFilter<$PrismaModel = never> = {
@@ -97,14 +97,14 @@ export type StringWithAggregatesFilter<$PrismaModel = never> = {
   _max?: Prisma.NestedStringFilter<$PrismaModel>
 }
 
-export type EnumRolSistemaWebWithAggregatesFilter<$PrismaModel = never> = {
-  equals?: $Enums.RolSistemaWeb | Prisma.EnumRolSistemaWebFieldRefInput<$PrismaModel>
-  in?: $Enums.RolSistemaWeb[] | Prisma.ListEnumRolSistemaWebFieldRefInput<$PrismaModel>
-  notIn?: $Enums.RolSistemaWeb[] | Prisma.ListEnumRolSistemaWebFieldRefInput<$PrismaModel>
-  not?: Prisma.NestedEnumRolSistemaWebWithAggregatesFilter<$PrismaModel> | $Enums.RolSistemaWeb
+export type EnumRolWebWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.RolWeb | Prisma.EnumRolWebFieldRefInput<$PrismaModel>
+  in?: $Enums.RolWeb[] | Prisma.ListEnumRolWebFieldRefInput<$PrismaModel>
+  notIn?: $Enums.RolWeb[] | Prisma.ListEnumRolWebFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumRolWebWithAggregatesFilter<$PrismaModel> | $Enums.RolWeb
   _count?: Prisma.NestedIntFilter<$PrismaModel>
-  _min?: Prisma.NestedEnumRolSistemaWebFilter<$PrismaModel>
-  _max?: Prisma.NestedEnumRolSistemaWebFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumRolWebFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumRolWebFilter<$PrismaModel>
 }
 
 export type BoolWithAggregatesFilter<$PrismaModel = never> = {
@@ -253,11 +253,11 @@ export type NestedStringFilter<$PrismaModel = never> = {
   not?: Prisma.NestedStringFilter<$PrismaModel> | string
 }
 
-export type NestedEnumRolSistemaWebFilter<$PrismaModel = never> = {
-  equals?: $Enums.RolSistemaWeb | Prisma.EnumRolSistemaWebFieldRefInput<$PrismaModel>
-  in?: $Enums.RolSistemaWeb[] | Prisma.ListEnumRolSistemaWebFieldRefInput<$PrismaModel>
-  notIn?: $Enums.RolSistemaWeb[] | Prisma.ListEnumRolSistemaWebFieldRefInput<$PrismaModel>
-  not?: Prisma.NestedEnumRolSistemaWebFilter<$PrismaModel> | $Enums.RolSistemaWeb
+export type NestedEnumRolWebFilter<$PrismaModel = never> = {
+  equals?: $Enums.RolWeb | Prisma.EnumRolWebFieldRefInput<$PrismaModel>
+  in?: $Enums.RolWeb[] | Prisma.ListEnumRolWebFieldRefInput<$PrismaModel>
+  notIn?: $Enums.RolWeb[] | Prisma.ListEnumRolWebFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumRolWebFilter<$PrismaModel> | $Enums.RolWeb
 }
 
 export type NestedBoolFilter<$PrismaModel = never> = {
@@ -318,14 +318,14 @@ export type NestedStringWithAggregatesFilter<$PrismaModel = never> = {
   _max?: Prisma.NestedStringFilter<$PrismaModel>
 }
 
-export type NestedEnumRolSistemaWebWithAggregatesFilter<$PrismaModel = never> = {
-  equals?: $Enums.RolSistemaWeb | Prisma.EnumRolSistemaWebFieldRefInput<$PrismaModel>
-  in?: $Enums.RolSistemaWeb[] | Prisma.ListEnumRolSistemaWebFieldRefInput<$PrismaModel>
-  notIn?: $Enums.RolSistemaWeb[] | Prisma.ListEnumRolSistemaWebFieldRefInput<$PrismaModel>
-  not?: Prisma.NestedEnumRolSistemaWebWithAggregatesFilter<$PrismaModel> | $Enums.RolSistemaWeb
+export type NestedEnumRolWebWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.RolWeb | Prisma.EnumRolWebFieldRefInput<$PrismaModel>
+  in?: $Enums.RolWeb[] | Prisma.ListEnumRolWebFieldRefInput<$PrismaModel>
+  notIn?: $Enums.RolWeb[] | Prisma.ListEnumRolWebFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumRolWebWithAggregatesFilter<$PrismaModel> | $Enums.RolWeb
   _count?: Prisma.NestedIntFilter<$PrismaModel>
-  _min?: Prisma.NestedEnumRolSistemaWebFilter<$PrismaModel>
-  _max?: Prisma.NestedEnumRolSistemaWebFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumRolWebFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumRolWebFilter<$PrismaModel>
 }
 
 export type NestedBoolWithAggregatesFilter<$PrismaModel = never> = {

@@ -27,9 +27,9 @@ export const TipoEventoAcceso = {
 export type TipoEventoAcceso = (typeof TipoEventoAcceso)[keyof typeof TipoEventoAcceso]
 
 
-export const RolSistemaWeb = {
+export const RolWeb = {
   ADMINISTRADOR: 'ADMINISTRADOR',
   CONSULTOR: 'CONSULTOR'
 } as const
 
-export type RolSistemaWeb = (typeof RolSistemaWeb)[keyof typeof RolSistemaWeb]
+export type RolWeb = (typeof RolWeb)[keyof typeof RolWeb]

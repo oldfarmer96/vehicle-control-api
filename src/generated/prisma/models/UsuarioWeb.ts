@@ -31,7 +31,7 @@ export type UsuarioWebMinAggregateOutputType = {
   dni: string | null
   username: string | null
   passwordHash: string | null
-  rol: $Enums.RolSistemaWeb | null
+  rol: $Enums.RolWeb | null
   activo: boolean | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -44,7 +44,7 @@ export type UsuarioWebMaxAggregateOutputType = {
   dni: string | null
   username: string | null
   passwordHash: string | null
-  rol: $Enums.RolSistemaWeb | null
+  rol: $Enums.RolWeb | null
   activo: boolean | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -184,7 +184,7 @@ export type UsuarioWebGroupByOutputType = {
   dni: string
   username: string
   passwordHash: string
-  rol: $Enums.RolSistemaWeb
+  rol: $Enums.RolWeb
   activo: boolean
   createdAt: Date
   updatedAt: Date
@@ -218,7 +218,7 @@ export type UsuarioWebWhereInput = {
   dni?: Prisma.StringFilter<"UsuarioWeb"> | string
   username?: Prisma.StringFilter<"UsuarioWeb"> | string
   passwordHash?: Prisma.StringFilter<"UsuarioWeb"> | string
-  rol?: Prisma.EnumRolSistemaWebFilter<"UsuarioWeb"> | $Enums.RolSistemaWeb
+  rol?: Prisma.EnumRolWebFilter<"UsuarioWeb"> | $Enums.RolWeb
   activo?: Prisma.BoolFilter<"UsuarioWeb"> | boolean
   createdAt?: Prisma.DateTimeFilter<"UsuarioWeb"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"UsuarioWeb"> | Date | string
@@ -247,7 +247,7 @@ export type UsuarioWebWhereUniqueInput = Prisma.AtLeast<{
   nombre?: Prisma.StringFilter<"UsuarioWeb"> | string
   apellidos?: Prisma.StringFilter<"UsuarioWeb"> | string
   passwordHash?: Prisma.StringFilter<"UsuarioWeb"> | string
-  rol?: Prisma.EnumRolSistemaWebFilter<"UsuarioWeb"> | $Enums.RolSistemaWeb
+  rol?: Prisma.EnumRolWebFilter<"UsuarioWeb"> | $Enums.RolWeb
   activo?: Prisma.BoolFilter<"UsuarioWeb"> | boolean
   createdAt?: Prisma.DateTimeFilter<"UsuarioWeb"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"UsuarioWeb"> | Date | string
@@ -279,7 +279,7 @@ export type UsuarioWebScalarWhereWithAggregatesInput = {
   dni?: Prisma.StringWithAggregatesFilter<"UsuarioWeb"> | string
   username?: Prisma.StringWithAggregatesFilter<"UsuarioWeb"> | string
   passwordHash?: Prisma.StringWithAggregatesFilter<"UsuarioWeb"> | string
-  rol?: Prisma.EnumRolSistemaWebWithAggregatesFilter<"UsuarioWeb"> | $Enums.RolSistemaWeb
+  rol?: Prisma.EnumRolWebWithAggregatesFilter<"UsuarioWeb"> | $Enums.RolWeb
   activo?: Prisma.BoolWithAggregatesFilter<"UsuarioWeb"> | boolean
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"UsuarioWeb"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"UsuarioWeb"> | Date | string
@@ -292,7 +292,7 @@ export type UsuarioWebCreateInput = {
   dni: string
   username: string
   passwordHash: string
-  rol: $Enums.RolSistemaWeb
+  rol: $Enums.RolWeb
   activo?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -305,7 +305,7 @@ export type UsuarioWebUncheckedCreateInput = {
   dni: string
   username: string
   passwordHash: string
-  rol: $Enums.RolSistemaWeb
+  rol: $Enums.RolWeb
   activo?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -318,7 +318,7 @@ export type UsuarioWebUpdateInput = {
   dni?: Prisma.StringFieldUpdateOperationsInput | string
   username?: Prisma.StringFieldUpdateOperationsInput | string
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
-  rol?: Prisma.EnumRolSistemaWebFieldUpdateOperationsInput | $Enums.RolSistemaWeb
+  rol?: Prisma.EnumRolWebFieldUpdateOperationsInput | $Enums.RolWeb
   activo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -331,7 +331,7 @@ export type UsuarioWebUncheckedUpdateInput = {
   dni?: Prisma.StringFieldUpdateOperationsInput | string
   username?: Prisma.StringFieldUpdateOperationsInput | string
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
-  rol?: Prisma.EnumRolSistemaWebFieldUpdateOperationsInput | $Enums.RolSistemaWeb
+  rol?: Prisma.EnumRolWebFieldUpdateOperationsInput | $Enums.RolWeb
   activo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -344,7 +344,7 @@ export type UsuarioWebCreateManyInput = {
   dni: string
   username: string
   passwordHash: string
-  rol: $Enums.RolSistemaWeb
+  rol: $Enums.RolWeb
   activo?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -357,7 +357,7 @@ export type UsuarioWebUpdateManyMutationInput = {
   dni?: Prisma.StringFieldUpdateOperationsInput | string
   username?: Prisma.StringFieldUpdateOperationsInput | string
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
-  rol?: Prisma.EnumRolSistemaWebFieldUpdateOperationsInput | $Enums.RolSistemaWeb
+  rol?: Prisma.EnumRolWebFieldUpdateOperationsInput | $Enums.RolWeb
   activo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -370,7 +370,7 @@ export type UsuarioWebUncheckedUpdateManyInput = {
   dni?: Prisma.StringFieldUpdateOperationsInput | string
   username?: Prisma.StringFieldUpdateOperationsInput | string
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
-  rol?: Prisma.EnumRolSistemaWebFieldUpdateOperationsInput | $Enums.RolSistemaWeb
+  rol?: Prisma.EnumRolWebFieldUpdateOperationsInput | $Enums.RolWeb
   activo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -419,8 +419,8 @@ export type StringFieldUpdateOperationsInput = {
   set?: string
 }
 
-export type EnumRolSistemaWebFieldUpdateOperationsInput = {
-  set?: $Enums.RolSistemaWeb
+export type EnumRolWebFieldUpdateOperationsInput = {
+  set?: $Enums.RolWeb
 }
 
 export type BoolFieldUpdateOperationsInput = {
@@ -497,7 +497,7 @@ export type $UsuarioWebPayload<ExtArgs extends runtime.Types.Extensions.Internal
     dni: string
     username: string
     passwordHash: string
-    rol: $Enums.RolSistemaWeb
+    rol: $Enums.RolWeb
     activo: boolean
     createdAt: Date
     updatedAt: Date
@@ -930,7 +930,7 @@ export interface UsuarioWebFieldRefs {
   readonly dni: Prisma.FieldRef<"UsuarioWeb", 'String'>
   readonly username: Prisma.FieldRef<"UsuarioWeb", 'String'>
   readonly passwordHash: Prisma.FieldRef<"UsuarioWeb", 'String'>
-  readonly rol: Prisma.FieldRef<"UsuarioWeb", 'RolSistemaWeb'>
+  readonly rol: Prisma.FieldRef<"UsuarioWeb", 'RolWeb'>
   readonly activo: Prisma.FieldRef<"UsuarioWeb", 'Boolean'>
   readonly createdAt: Prisma.FieldRef<"UsuarioWeb", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"UsuarioWeb", 'DateTime'>

@@ -928,16 +928,16 @@ export type ListStringFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaMod
 
 
 /**
- * Reference to a field of type 'RolSistemaWeb'
+ * Reference to a field of type 'RolWeb'
  */
-export type EnumRolSistemaWebFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'RolSistemaWeb'>
+export type EnumRolWebFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'RolWeb'>
     
 
 
 /**
- * Reference to a field of type 'RolSistemaWeb[]'
+ * Reference to a field of type 'RolWeb[]'
  */
-export type ListEnumRolSistemaWebFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'RolSistemaWeb[]'>
+export type ListEnumRolWebFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'RolWeb[]'>
     
 
 
