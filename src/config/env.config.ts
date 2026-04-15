@@ -10,4 +10,5 @@ export const envSchema = Joi.object({
   API_PREFIX: Joi.string().required(),
   JWT_SECRET: Joi.string().required(),
   COOKIE_NAME: Joi.string().required(),
+  COOKIE_SECRET: Joi.string().required(),
 });
