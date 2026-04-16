@@ -13,6 +13,7 @@ import { VehiclesService } from './vehicles.service';
 import { CreateVehicleDto } from './dto/create-vehicle.dto';
 import { FindVehicleQryDto } from './dto/find-vehicle-qry.dto';
 import { ParsePlacaPipe } from './pipes/parse-placa.pipe';
+import { AssignOwnerDto } from './dto/assign-owner.dto';
 
 @Controller('vehicles')
 export class VehiclesController {
@@ -34,14 +35,18 @@ export class VehiclesController {
   }
 
   @Post(':id/assign-owner')
-  assignOwner(
+  async assignOwner(
     @Param(
       'id',
       new ParseUUIDPipe({
         errorHttpStatusCode: HttpStatus.BAD_REQUEST,
-        exceptionFactory: () => new BadRequestException('invalid id'),
+        exceptionFactory: () =>
+          new BadRequestException('El ID del vehículo no es válido'),
       }),
     )
-    id: string,
-  ) {}
+    vehiculoId: string,
+    @Body() assignOwnerDto: AssignOwnerDto,
+  ) {
+    return this.vehicleService.assignOwner(vehiculoId, assignOwnerDto);
+  }
 }

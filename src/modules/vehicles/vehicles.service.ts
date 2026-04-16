@@ -9,6 +9,7 @@ import { PrismaService } from '@src/core/prisma/prisma.service';
 import { CreateVehicleDto } from './dto/create-vehicle.dto';
 import { FindVehicleQryDto } from './dto/find-vehicle-qry.dto';
 import { Prisma } from '@src/generated/prisma/client';
+import { AssignOwnerDto } from './dto/assign-owner.dto';
 
 @Injectable()
 export class VehiclesService {
@@ -91,5 +92,69 @@ export class VehiclesService {
     }
 
     return vehicle;
+  }
+
+  async assignOwner(vehiculoId: string, assignOwnerDto: AssignOwnerDto) {
+    const { personaId } = assignOwnerDto;
+
+    const vehiculo = await this.prisma.vehiculo.findUnique({
+      where: { id: vehiculoId },
+    });
+
+    if (!vehiculo) {
+      throw new NotFoundException(
+        `El vehículo con ID ${vehiculoId} no existe.`,
+      );
+    }
+
+    const persona = await this.prisma.persona.findUnique({
+      where: { id: personaId },
+    });
+
+    if (!persona) {
+      throw new NotFoundException(`La persona con ID ${personaId} no existe.`);
+    }
+
+    const vinculacionExistente = await this.prisma.vehiculoPersona.findUnique({
+      where: {
+        vehiculoId_personaId: {
+          vehiculoId: vehiculoId,
+          personaId: personaId,
+        },
+      },
+    });
+
+    if (vinculacionExistente) {
+      throw new ConflictException(
+        'Esta persona ya está registrada como propietaria de este vehículo.',
+      );
+    }
+
+    const nuevaVinculacion = await this.prisma.vehiculoPersona.create({
+      data: {
+        vehiculoId: vehiculoId,
+        personaId: personaId,
+      },
+      include: {
+        persona: {
+          select: {
+            dni: true,
+            nombreCompleto: true,
+            rol: true,
+          },
+        },
+        vehiculo: {
+          select: {
+            placa: true,
+            marca: true,
+          },
+        },
+      },
+    });
+
+    return {
+      mensaje: 'Propietario asignado correctamente al vehículo',
+      vinculacion: nuevaVinculacion,
+    };
   }
 }
