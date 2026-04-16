@@ -24,7 +24,7 @@ export class AuthService {
       throw new NotFoundException('Usuario no encontrado');
     }
 
-    const pwdIsMatch = await bcrypt.compare(dto.password, user.passwordHash);
+    const pwdIsMatch = await bcrypt.compare(dto.password, user.password);
 
     if (!pwdIsMatch) {
       throw new UnauthorizedException('Datos invalidos');
@@ -32,7 +32,7 @@ export class AuthService {
 
     const payload = { sub: user.id, userName: user.username, role: user.rol };
     const token = await this.jwtService.signAsync(payload);
-    const { passwordHash, ...result } = user;
+    const { password, ...result } = user;
 
     return { token, result };
   }

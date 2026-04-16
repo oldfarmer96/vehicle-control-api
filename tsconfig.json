@@ -24,6 +24,7 @@
     "noImplicitAny": false,
     "strictBindCallApply": false,
     "noFallthroughCasesInSwitch": false,
-    "strictPropertyInitialization": false
+    // fix ts v7.0
+    "strictPropertyInitialization": true
   }
 }
