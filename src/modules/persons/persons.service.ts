@@ -9,6 +9,7 @@ import { PrismaService } from '@src/core/prisma/prisma.service';
 import { CreatePersonDto } from './dto/create-person.dto';
 import { FindPersonsQryDto } from './dto/find-persons-qry.dto';
 import { Prisma } from '@src/generated/prisma/client';
+import { UpdatePersonDto } from './dto/update-person.dto';
 
 @Injectable()
 export class PersonsService {
@@ -102,5 +103,28 @@ export class PersonsService {
       this.logger.warn('Error al actulizar estado de la persona}', error);
       throw new InternalServerErrorException('Error interno');
     }
+  }
+
+  async updatePerson(id: string, dto: UpdatePersonDto) {
+    const personFind = await this.prisma.persona.findUnique({ where: { id } });
+
+    if (!personFind) {
+      throw new NotFoundException('Persona no econtrada');
+    }
+
+    if (dto.dni && dto.dni !== personFind.dni) {
+      const dniExists = await this.prisma.persona.findUnique({
+        where: { dni: dto.dni },
+      });
+
+      if (dniExists) throw new ConflictException('El DNI ya esta en uso');
+    }
+
+    const personUpdate = await this.prisma.persona.update({
+      where: { id },
+      data: dto,
+    });
+
+    return personUpdate;
   }
 }

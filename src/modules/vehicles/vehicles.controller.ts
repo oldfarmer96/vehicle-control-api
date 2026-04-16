@@ -32,4 +32,16 @@ export class VehiclesController {
   getVehicleByPlaca(@Param('placa', ParsePlacaPipe) placa: string) {
     return this.vehicleService.getVehicleByPlaca(placa);
   }
+
+  @Post(':id/assign-owner')
+  assignOwner(
+    @Param(
+      'id',
+      new ParseUUIDPipe({
+        errorHttpStatusCode: HttpStatus.BAD_REQUEST,
+        exceptionFactory: () => new BadRequestException('invalid id'),
+      }),
+    )
+    id: string,
+  ) {}
 }
