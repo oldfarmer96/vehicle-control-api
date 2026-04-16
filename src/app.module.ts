@@ -7,6 +7,7 @@ import { PrismaModule } from './core/prisma/prisma.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { UsersModule } from './modules/users/users.module';
 import { VehiclesModule } from './modules/vehicles/vehicles.module';
+import { PersonsModule } from './modules/persons/persons.module';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { VehiclesModule } from './modules/vehicles/vehicles.module';
     AuthModule,
     UsersModule,
     VehiclesModule,
+    PersonsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
