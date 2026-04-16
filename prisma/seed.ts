@@ -15,7 +15,7 @@ const users: Prisma.UsuarioWebCreateInput[] = [
     username: 'jos3lo',
     nombre: 'jose luis',
     apellidos: 'galindo cardenas',
-    passwordHash: '123456',
+    password: '123456',
     rol: RolWeb.ADMINISTRADOR,
   },
   {
@@ -23,7 +23,7 @@ const users: Prisma.UsuarioWebCreateInput[] = [
     username: 'haru',
     nombre: 'haruhi',
     apellidos: 'suzumiya',
-    passwordHash: '123456',
+    password: '123456',
     rol: RolWeb.CONSULTOR,
   },
 ];
@@ -39,11 +39,11 @@ async function main() {
       where: { username: u.username },
       update: {
         ...u,
-        passwordHash: hashedPwd,
+        password: hashedPwd,
       },
       create: {
         ...u,
-        passwordHash: hashedPwd,
+        password: hashedPwd,
       },
     });
 
