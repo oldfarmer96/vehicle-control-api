@@ -3,10 +3,12 @@ import { PrismaService } from '@src/core/prisma/prisma.service';
 import { AccessEventsGateway } from './access-events.gateway';
 import { HttpService } from '@nestjs/axios';
 import { ReceiveEventDto } from './dto/receive-event.dto';
+import { FindAccessEventsQryDto } from './dto/find-access-events-qry.dto';
 import { firstValueFrom } from 'rxjs';
 import { ConfigService } from '@nestjs/config';
 import { AxiosError } from 'axios';
 import { TipoEventoAcceso } from '@src/generated/prisma/enums';
+import { Prisma } from '@src/generated/prisma/client';
 
 @Injectable()
 export class AccessEventsService {
@@ -143,5 +145,137 @@ export class AccessEventsService {
     });
 
     return vehiculoFantasma;
+  }
+
+  async getAllEvents(qry: FindAccessEventsQryDto) {
+    const {
+      page = 1,
+      limit = 10,
+      search,
+      startDate,
+      endDate,
+      tipoEvento,
+    } = qry;
+    const skip = (page - 1) * limit;
+
+    const where: Prisma.EventoAccesoWhereInput = {};
+
+    if (search) {
+      where.vehiculo = { placa: { contains: search, mode: 'insensitive' } };
+    }
+
+    if (tipoEvento) {
+      where.tipoEvento = tipoEvento;
+    }
+
+    if (startDate || endDate) {
+      const PET_OFFSET_HOURS = 5;
+      const now = new Date();
+
+      const start = startDate
+        ? new Date(
+            new Date(startDate).getTime() + PET_OFFSET_HOURS * 60 * 60 * 1000,
+          )
+        : new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
+
+      const end = endDate
+        ? new Date(
+            new Date(endDate).getTime() +
+              PET_OFFSET_HOURS * 60 * 60 * 1000 +
+              24 * 60 * 60 * 1000 -
+              1,
+          )
+        : new Date(now.getTime() + PET_OFFSET_HOURS * 60 * 60 * 1000);
+
+      where.fechaHora = {
+        gte: start,
+        lte: end,
+      };
+    }
+
+    const [total, events] = await Promise.all([
+      this.prisma.eventoAcceso.count({ where }),
+      this.prisma.eventoAcceso.findMany({
+        where,
+        skip,
+        take: limit,
+        orderBy: { fechaHora: 'desc' },
+        include: {
+          vehiculo: {
+            select: {
+              placa: true,
+              marca: true,
+              modelo: true,
+              color: true,
+              personas: {
+                include: {
+                  persona: { select: { nombreCompleto: true, rol: true } },
+                },
+              },
+            },
+          },
+        },
+      }),
+    ]);
+
+    const lastPage = Math.ceil(total / limit);
+
+    return {
+      data: events,
+      meta: {
+        total,
+        isEmpty: total === 0,
+        page,
+        limit,
+        lastPage,
+        hasNext: page < lastPage,
+        hasPrev: page > 1,
+        nextPage: page < lastPage ? page + 1 : null,
+        prevPage: page > 1 ? page - 1 : null,
+      },
+    };
+  }
+
+  async getRecentEvents() {
+    // Traer las últimas 15 entradas
+    const entradas = await this.prisma.eventoAcceso.findMany({
+      where: { tipoEvento: 'ENTRADA' },
+      orderBy: { fechaHora: 'desc' },
+      take: 5,
+      include: {
+        vehiculo: {
+          select: {
+            placa: true,
+            marca: true,
+            modelo: true,
+            color: true,
+            personas: { include: { persona: true } },
+          },
+        },
+      },
+    });
+
+    // Traer las últimas 15 salidas
+    const salidas = await this.prisma.eventoAcceso.findMany({
+      where: { tipoEvento: 'SALIDA' },
+      orderBy: { fechaHora: 'desc' },
+      take: 5,
+      include: {
+        vehiculo: {
+          select: {
+            placa: true,
+            marca: true,
+            modelo: true,
+            color: true,
+            personas: { include: { persona: true } },
+          },
+        },
+      },
+    });
+
+    return {
+      entrada: entradas,
+      salida: salidas,
+    };
   }
 }
