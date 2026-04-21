@@ -14,6 +14,7 @@ import { PersonsService } from './persons.service';
 import { CreatePersonDto } from './dto/create-person.dto';
 import { FindPersonsQryDto } from './dto/find-persons-qry.dto';
 import { UpdateAccessStatusDto } from './dto/update-access-status.dto';
+import { UpdatePersonDto } from './dto/update-person.dto';
 
 @Controller('persons')
 export class PersonsController {
@@ -42,5 +43,20 @@ export class PersonsController {
     @Body() dto: UpdateAccessStatusDto,
   ) {
     return this.personService.updateAccessStatus(id, dto.status);
+  }
+
+  @Patch(':id')
+  updatePerson(
+    @Param(
+      'id',
+      new ParseUUIDPipe({
+        errorHttpStatusCode: HttpStatus.BAD_REQUEST,
+        exceptionFactory: () => new BadRequestException('invalid id'),
+      }),
+    )
+    id: string,
+    @Body() dto: UpdatePersonDto,
+  ) {
+    return this.personService.updatePerson(id, dto);
   }
 }

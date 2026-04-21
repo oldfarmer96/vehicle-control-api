@@ -8,6 +8,8 @@ import { AuthModule } from './modules/auth/auth.module';
 import { UsersModule } from './modules/users/users.module';
 import { VehiclesModule } from './modules/vehicles/vehicles.module';
 import { PersonsModule } from './modules/persons/persons.module';
+import { RegistrationsModule } from './modules/registrations/registrations.module';
+import { AccessEventsModule } from './modules/access-events/access-events.module';
 
 @Module({
   imports: [
@@ -21,6 +23,8 @@ import { PersonsModule } from './modules/persons/persons.module';
     UsersModule,
     VehiclesModule,
     PersonsModule,
+    RegistrationsModule,
+    AccessEventsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

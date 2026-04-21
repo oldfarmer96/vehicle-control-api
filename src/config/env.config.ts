@@ -11,4 +11,7 @@ export const envSchema = Joi.object({
   JWT_SECRET: Joi.string().required(),
   COOKIE_NAME: Joi.string().required(),
   COOKIE_SECRET: Joi.string().required(),
+  CAMERA_WEBHOOK_KEY: Joi.string().required(),
+  TOKEN_JSON_API: Joi.string().required(),
+  URL_PLACA_API: Joi.string().required(),
 });
