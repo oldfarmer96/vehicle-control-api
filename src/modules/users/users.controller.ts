@@ -17,6 +17,8 @@ import { RolWeb } from '@src/generated/prisma/enums';
 import { UpdateUserStatusDto } from './dto/update-user-status.dto';
 import { FindUsersQueryDto } from './dto/find-users-qry.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { CurrentUser } from '@src/common/decorators/current-user.decorator';
+import { type CurrentUserI } from '@src/common/interfaces/current-user.interface';
 
 @Controller('users')
 export class UsersController {
@@ -61,5 +63,11 @@ export class UsersController {
     @Body() dto: UpdateUserDto,
   ) {
     return this.userService.updateUser(id, dto);
+  }
+
+  @Get('profile')
+  @Auth()
+  getProfile(@CurrentUser() user: CurrentUserI) {
+    return this.userService.getProfile(user.id);
   }
 }

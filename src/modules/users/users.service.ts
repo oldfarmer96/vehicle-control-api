@@ -176,4 +176,18 @@ export class UsersService {
 
     return userUpdate;
   }
+
+  async getProfile(id: string) {
+    const user = await this.prisma.usuarioWeb.findUnique({
+      where: { id },
+      omit: {
+        password: true,
+      },
+    });
+
+    if (!user) {
+      throw new NotFoundException('Usuario no encontrado');
+    }
+    return user;
+  }
 }
