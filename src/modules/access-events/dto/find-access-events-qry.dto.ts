@@ -1,6 +1,6 @@
+import { TipoEventoAcceso } from '@/generated/prisma/enums';
 import { Transform } from 'class-transformer';
 import { IsInt, IsOptional, IsString, Min, IsEnum } from 'class-validator';
-import { TipoEventoAcceso } from '@src/generated/prisma/enums';
 
 export class FindAccessEventsQryDto {
   @Transform(({ value }) => parseInt(value))

@@ -1,3 +1,4 @@
+import { RolUniversitario } from '@/generated/prisma/enums';
 import {
   IsString,
   IsNotEmpty,
@@ -7,7 +8,6 @@ import {
   MaxLength,
   Matches,
 } from 'class-validator';
-import { RolUniversitario } from '@src/generated/prisma/enums';
 
 export class UpdatePersonDto {
   @IsOptional()

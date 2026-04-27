@@ -1,8 +1,8 @@
 import { Body, Controller, Get, Post, Query, UseGuards } from '@nestjs/common';
 import { AccessEventsService } from './access-events.service';
-import { ApiKeyGuard } from '@src/common/guards/api-key.guard';
 import { ReceiveEventDto } from './dto/receive-event.dto';
 import { FindAccessEventsQryDto } from './dto/find-access-events-qry.dto';
+import { ApiKeyGuard } from '@/common/guards/api-key.guard';
 
 @Controller('access-events')
 export class AccessEventsController {

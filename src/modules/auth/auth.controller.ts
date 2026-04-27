@@ -10,7 +10,7 @@ import { AuthService } from './auth.service';
 import { LoginDto } from './dto/login.dto';
 import type { Response } from 'express';
 import { ConfigService } from '@nestjs/config';
-import { Auth } from '@src/common/decorators/auth.decorator';
+import { Auth } from '@/common/decorators/auth.decorator';
 
 @Controller('auth')
 export class AuthController {
