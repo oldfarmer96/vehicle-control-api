@@ -38,10 +38,10 @@ async function bootstrap() {
     }),
   );
 
-  const apiPrefix = configService.get<string>('API_PREFIX', 'api/v1');
+  const apiPrefix = configService.get<string>('API_PREFIX', 'api');
 
   app.setGlobalPrefix(apiPrefix, {
-    exclude: ['health'],
+    exclude: ['health', '/'],
   });
 
   app.enableShutdownHooks();
