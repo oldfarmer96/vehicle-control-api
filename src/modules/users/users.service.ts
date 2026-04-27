@@ -5,12 +5,12 @@ import {
   Logger,
   NotFoundException,
 } from '@nestjs/common';
-import { PrismaService } from '@src/core/prisma/prisma.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import bcrypt from 'bcryptjs';
 import { FindUsersQueryDto } from './dto/find-users-qry.dto';
-import { Prisma } from '@src/generated/prisma/client';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { PrismaService } from '@/core/prisma/prisma.service';
+import { Prisma } from '@/generated/prisma/client';
 
 @Injectable()
 export class UsersService {

@@ -6,7 +6,7 @@ import {
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { ROLES_KEY } from '../decorators/auth.decorator';
-import { RolWeb } from '@src/generated/prisma/enums';
+import { RolWeb } from '@/generated/prisma/enums';
 
 @Injectable()
 export class RolesGuard implements CanActivate {

@@ -1,5 +1,4 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { PrismaService } from '@src/core/prisma/prisma.service';
 import { AccessEventsGateway } from './access-events.gateway';
 import { HttpService } from '@nestjs/axios';
 import { ReceiveEventDto } from './dto/receive-event.dto';
@@ -7,8 +6,9 @@ import { FindAccessEventsQryDto } from './dto/find-access-events-qry.dto';
 import { firstValueFrom } from 'rxjs';
 import { ConfigService } from '@nestjs/config';
 import { AxiosError } from 'axios';
-import { TipoEventoAcceso } from '@src/generated/prisma/enums';
-import { Prisma } from '@src/generated/prisma/client';
+import { PrismaService } from '@/core/prisma/prisma.service';
+import { TipoEventoAcceso } from '@/generated/prisma/enums';
+import { Prisma } from '@/generated/prisma/client';
 
 @Injectable()
 export class AccessEventsService {

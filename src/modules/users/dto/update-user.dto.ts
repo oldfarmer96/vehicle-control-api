@@ -1,3 +1,4 @@
+import { RolWeb } from '@/generated/prisma/enums';
 import {
   IsString,
   IsEnum,
@@ -5,7 +6,6 @@ import {
   Matches,
   IsOptional,
 } from 'class-validator';
-import { RolWeb } from '@src/generated/prisma/enums';
 
 export class UpdateUserDto {
   @IsOptional()

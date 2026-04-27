@@ -12,13 +12,13 @@ import {
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
-import { Auth } from '@src/common/decorators/auth.decorator';
-import { RolWeb } from '@src/generated/prisma/enums';
 import { UpdateUserStatusDto } from './dto/update-user-status.dto';
 import { FindUsersQueryDto } from './dto/find-users-qry.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { CurrentUser } from '@src/common/decorators/current-user.decorator';
-import { type CurrentUserI } from '@src/common/interfaces/current-user.interface';
+import { RolWeb } from '@/generated/prisma/enums';
+import { Auth } from '@/common/decorators/auth.decorator';
+import { CurrentUser } from '@/common/decorators/current-user.decorator';
+import { type CurrentUserI } from '@/common/interfaces/current-user.interface';
 
 @Controller('users')
 export class UsersController {

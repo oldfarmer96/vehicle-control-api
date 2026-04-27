@@ -5,11 +5,11 @@ import {
   Logger,
   NotFoundException,
 } from '@nestjs/common';
-import { PrismaService } from '@src/core/prisma/prisma.service';
 import { CreateVehicleDto } from './dto/create-vehicle.dto';
 import { FindVehicleQryDto } from './dto/find-vehicle-qry.dto';
-import { Prisma } from '@src/generated/prisma/client';
 import { AssignOwnerDto } from './dto/assign-owner.dto';
+import { PrismaService } from '@/core/prisma/prisma.service';
+import { Prisma } from '@/generated/prisma/client';
 
 @Injectable()
 export class VehiclesService {

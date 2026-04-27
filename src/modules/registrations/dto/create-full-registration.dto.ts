@@ -6,7 +6,7 @@ import {
   ValidateNested,
 } from 'class-validator';
 import { Type } from 'class-transformer';
-import { RolUniversitario } from '@src/generated/prisma/enums';
+import { RolUniversitario } from '@/generated/prisma/enums';
 
 class PersonRegistrationDto {
   @IsString()

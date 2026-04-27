@@ -1,3 +1,4 @@
+import { RolWeb } from '@/generated/prisma/enums';
 import {
   IsString,
   IsNotEmpty,
@@ -6,7 +7,6 @@ import {
   MaxLength,
   Matches,
 } from 'class-validator';
-import { RolWeb } from '@src/generated/prisma/enums';
 
 export class CreateUserDto {
   @IsNotEmpty({ message: 'El nombre es obligatorio' })

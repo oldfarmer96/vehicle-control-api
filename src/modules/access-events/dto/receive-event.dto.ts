@@ -1,4 +1,4 @@
-import { TipoEventoAcceso } from '@src/generated/prisma/enums';
+import { TipoEventoAcceso } from '@/generated/prisma/enums';
 import {
   IsString,
   IsNotEmpty,
