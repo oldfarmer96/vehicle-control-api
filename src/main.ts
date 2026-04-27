@@ -4,20 +4,40 @@ import { ConfigService } from '@nestjs/config';
 import cookieParser from 'cookie-parser';
 import { Logger, ValidationPipe } from '@nestjs/common';
 import helmet from 'helmet';
+import favicon from 'serve-favicon';
+import { join } from 'path';
+import compression from 'compression';
+import { rateLimit } from 'express-rate-limit';
+import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
     logger: ['error', 'warn', 'debug', 'log', 'fatal', 'verbose'],
   });
 
-  app.use(helmet());
+  const config = new DocumentBuilder()
+    .setTitle('Control de vehiculos')
+    .setDescription('Control vehicular de entrada y salida')
+    .setVersion('1.0')
+    .build();
+  const documentFactory = () => SwaggerModule.createDocument(app, config);
+  SwaggerModule.setup('docs', app, documentFactory);
 
   const logger = new Logger('bootstrap');
   const configService = app.get(ConfigService);
 
   const cookieSecret = configService.get('COOKIE_SECRET');
 
-  app.use(cookieParser(cookieSecret));
+  app.use(
+    compression(),
+    helmet(),
+    rateLimit({
+      windowMs: 15 * 60 * 1000,
+      limit: 500,
+    }),
+    cookieParser(cookieSecret),
+    favicon(join(__dirname, '..', 'public', 'favicon.ico')),
+  );
 
   const isProd = configService.get('NODE_ENV') === 'production';
   const corsOrigins = configService
