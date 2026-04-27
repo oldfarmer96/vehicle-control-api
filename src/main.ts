@@ -15,14 +15,6 @@ async function bootstrap() {
     logger: ['error', 'warn', 'debug', 'log', 'fatal', 'verbose'],
   });
 
-  const config = new DocumentBuilder()
-    .setTitle('Control de vehiculos')
-    .setDescription('Control vehicular de entrada y salida')
-    .setVersion('1.0')
-    .build();
-  const documentFactory = () => SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('docs', app, documentFactory);
-
   const logger = new Logger('bootstrap');
   const configService = app.get(ConfigService);
 
@@ -39,7 +31,7 @@ async function bootstrap() {
     favicon(join(__dirname, '..', 'public', 'favicon.ico')),
   );
 
-  const isProd = configService.get('NODE_ENV') === 'production';
+  const isProd = configService.get('NODE_ENV') === 'prod';
   const corsOrigins = configService
     .get<string>('CORS_ORIGINS', '')
     .split(',')
@@ -57,6 +49,16 @@ async function bootstrap() {
       transform: true,
     }),
   );
+
+  if (!isProd) {
+    const config = new DocumentBuilder()
+      .setTitle('Control de vehiculos')
+      .setDescription('Control vehicular de entrada y salida')
+      .setVersion('1.0')
+      .build();
+    const documentFactory = () => SwaggerModule.createDocument(app, config);
+    SwaggerModule.setup('docs', app, documentFactory);
+  }
 
   const apiPrefix = configService.get<string>('API_PREFIX', 'api');
 

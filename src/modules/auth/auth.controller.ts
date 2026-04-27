@@ -61,6 +61,6 @@ export class AuthController {
 
   // utils
   isProd(): boolean {
-    return this.configService.get<string>('NODE_ENV') === 'production';
+    return this.configService.get<string>('NODE_ENV') === 'prod';
   }
 }
