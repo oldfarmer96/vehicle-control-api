@@ -2,8 +2,6 @@
 // npm install --save-dev prisma dotenv
 import 'dotenv/config';
 import { defineConfig } from 'prisma/config';
-// const isProd = process.env.NODE_ENV === 'production';
-// const seedCommand = isProd ? 'node prisma/seed.js' : 'tsx prisma/seed.ts';
 
 export default defineConfig({
   schema: 'prisma/schema.prisma',
