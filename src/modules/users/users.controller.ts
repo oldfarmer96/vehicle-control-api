@@ -37,6 +37,7 @@ export class UsersController {
   }
 
   @Patch(':id/status')
+  @Auth(RolWeb.ADMINISTRADOR)
   updateState(
     @Param(
       'id',

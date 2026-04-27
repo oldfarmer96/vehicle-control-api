@@ -31,6 +31,7 @@ export class VehiclesController {
 
   @Get(':placa/placa')
   getVehicleByPlaca(@Param('placa', ParsePlacaPipe) placa: string) {
+    // FIX: fix ParsePlacaPipe - F7X-333
     return this.vehicleService.getVehicleByPlaca(placa);
   }
 

@@ -21,8 +21,7 @@ export class AuthController {
     private readonly authService: AuthService,
     private readonly configService: ConfigService,
   ) {
-    this.cookieName =
-      this.configService.get<string>('COOKIE_NAME') || 'vehicleControlAuth';
+    this.cookieName = configService.getOrThrow<string>('COOKIE_NAME');
   }
 
   @Post('login')
@@ -60,7 +59,7 @@ export class AuthController {
   }
 
   // utils
-  isProd(): boolean {
+  private isProd(): boolean {
     return this.configService.get<string>('NODE_ENV') === 'prod';
   }
 }
