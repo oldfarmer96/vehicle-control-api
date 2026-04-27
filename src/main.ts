@@ -28,8 +28,10 @@ async function bootstrap() {
     compression(),
     helmet(),
     rateLimit({
-      windowMs: 15 * 60 * 1000,
-      limit: 500,
+      // windowMs: 15 * 60 * 1000,
+      // limit: 500,
+      windowMs: 1 * 60 * 1000,
+      limit: 5,
     }),
     cookieParser(cookieSecret),
     favicon(join(__dirname, '..', 'public', 'favicon.ico')),
