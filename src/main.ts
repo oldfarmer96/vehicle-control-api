@@ -15,6 +15,10 @@ async function bootstrap() {
     logger: ['error', 'warn', 'debug', 'log', 'fatal', 'verbose'],
   });
 
+  // app.set('trust proxy', 1);
+  const expressApp = app.getHttpAdapter().getInstance();
+  expressApp.set('trust proxy', 1);
+
   const logger = new Logger('bootstrap');
   const configService = app.get(ConfigService);
 
