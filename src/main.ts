@@ -32,6 +32,14 @@ async function bootstrap() {
       // limit: 500,
       windowMs: 1 * 60 * 1000,
       limit: 5,
+      handler: (_, res) => {
+        res.status(429).json({
+          statusCode: 429,
+          error: 'Demasiadas peticiones',
+          message:
+            'Has excedido el límite de solicitudes. Intenta de nuevo en 15 minutos.',
+        });
+      },
     }),
     cookieParser(cookieSecret),
     favicon(join(__dirname, '..', 'public', 'favicon.ico')),
