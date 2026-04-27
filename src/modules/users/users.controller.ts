@@ -31,6 +31,7 @@ export class UsersController {
   }
 
   @Get()
+  @Auth(RolWeb.ADMINISTRADOR)
   getAllUsers(@Query() qry: FindUsersQueryDto) {
     return this.userService.getAllUsers(qry);
   }
