@@ -31,17 +31,22 @@ RUN addgroup -g 1001 -S nodejs && \
 
 WORKDIR /app
 
-COPY --from=production-deps /app/node_modules ./node_modules
-COPY --from=development /app/dist ./dist
-COPY docker-entrypoint.sh ./
-COPY package*.json ./
+# COPY --from=production-deps /app/node_modules ./node_modules
+# COPY --from=development /app/dist ./dist
+# COPY docker-entrypoint.sh ./
+# COPY package*.json ./
 
-RUN chown -R nestjs:nodejs /app
+COPY --chown=nestjs:nodejs --from=production-deps /app/node_modules ./node_modules
+COPY --chown=nestjs:nodejs --from=development /app/dist ./dist
+COPY --chown=nestjs:nodejs docker-entrypoint.sh ./
+COPY --chown=nestjs:nodejs package*.json ./
 
-USER nestjs
+# RUN chown -R nestjs:nodejs /app
 
 RUN sed -i 's/\r$//' ./docker-entrypoint.sh && \
   chmod +x ./docker-entrypoint.sh
+
+USER nestjs
 
 EXPOSE 4000
 
