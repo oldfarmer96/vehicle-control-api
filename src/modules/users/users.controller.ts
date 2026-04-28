@@ -1,11 +1,8 @@
 import {
-  BadRequestException,
   Body,
   Controller,
   Get,
-  HttpStatus,
   Param,
-  ParseUUIDPipe,
   Patch,
   Post,
   Query,
@@ -19,6 +16,8 @@ import { RolWeb } from '@/generated/prisma/enums';
 import { Auth } from '@/common/decorators/auth.decorator';
 import { CurrentUser } from '@/common/decorators/current-user.decorator';
 import { type CurrentUserI } from '@/common/interfaces/current-user.interface';
+import { UUIDPipe } from '@/common/pipes/parse-uuid.pipe';
+import { ProfileDto } from './dto/get-profile.dto';
 
 @Controller('users')
 export class UsersController {
@@ -39,37 +38,21 @@ export class UsersController {
   @Patch(':id/status')
   @Auth(RolWeb.ADMINISTRADOR)
   updateState(
-    @Param(
-      'id',
-      new ParseUUIDPipe({
-        errorHttpStatusCode: HttpStatus.BAD_REQUEST,
-        exceptionFactory: () => new BadRequestException('invalid id'),
-      }),
-    )
-    id: string,
+    @Param('id', UUIDPipe) id: string,
     @Body() dto: UpdateUserStatusDto,
   ) {
     return this.userService.updateState(dto.status, id);
   }
 
   @Patch(':id')
-  updateUser(
-    @Param(
-      'id',
-      new ParseUUIDPipe({
-        errorHttpStatusCode: HttpStatus.BAD_REQUEST,
-        exceptionFactory: () => new BadRequestException('invalid id'),
-      }),
-    )
-    id: string,
-    @Body() dto: UpdateUserDto,
-  ) {
+  @Auth(RolWeb.ADMINISTRADOR)
+  updateUser(@Param('id', UUIDPipe) id: string, @Body() dto: UpdateUserDto) {
     return this.userService.updateUser(id, dto);
   }
 
   @Get('profile')
   @Auth()
-  getProfile(@CurrentUser() user: CurrentUserI) {
-    return this.userService.getProfile(user.id);
+  async getProfile(@CurrentUser() user: CurrentUserI): Promise<ProfileDto> {
+    return await this.userService.getProfile(user.id);
   }
 }

@@ -1,8 +1,12 @@
-import { NestFactory } from '@nestjs/core';
+import { NestFactory, Reflector } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ConfigService } from '@nestjs/config';
 import cookieParser from 'cookie-parser';
-import { Logger, ValidationPipe } from '@nestjs/common';
+import {
+  ClassSerializerInterceptor,
+  Logger,
+  ValidationPipe,
+} from '@nestjs/common';
 import helmet from 'helmet';
 import favicon from 'serve-favicon';
 import { join } from 'path';
@@ -22,6 +26,8 @@ async function bootstrap() {
   const configService = app.get(ConfigService);
 
   const cookieSecret = configService.get('COOKIE_SECRET');
+
+  app.useGlobalInterceptors(new ClassSerializerInterceptor(app.get(Reflector)));
 
   app.use(
     compression(),
