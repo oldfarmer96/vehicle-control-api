@@ -1,98 +1,122 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# Vehicle Control API
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+NestJS + TypeScript API with Prisma ORM (PostgreSQL). Vehicle access control system for managing university campus entry/exit.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
-
-## Description
-
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
-
-## Project setup
+## Setup
 
 ```bash
-$ npm install
+npm install
 ```
 
-## Compile and run the project
+Create a `.env` file based on `.env.example` (if present) with all required variables:
+
+| Variable | Description | Default |
+|---|---|---|
+| `DATABASE_URL` | PostgreSQL connection string | required |
+| `PORT` | Server port | `4000` |
+| `NODE_ENV` | `dev` or `prod` | `dev` |
+| `CORS_ORIGINS` | Comma-separated allowed origins | required |
+| `API_PREFIX` | URL prefix for all routes | required |
+| `JWT_SECRET` | Secret for JWT signing | required |
+| `COOKIE_NAME` | Cookie name for session | required |
+| `COOKIE_SECRET` | Secret for cookie signing | required |
+| `CAMERA_WEBHOOK_KEY` | API key for camera webhooks | required |
+| `TOKEN_JSON_API` | External API token | required |
+| `URL_PLACA_API` | External license plate API URL | required |
+
+## Database
 
 ```bash
-# development
-$ npm run start
-
-# watch mode
-$ npm run start:dev
-
-# production mode
-$ npm run start:prod
+npx prisma migrate dev     # run migrations
+npx prisma db seed         # seed the database
 ```
 
-## Run tests
+Prisma schema is at `prisma/schema.prisma`. Client generated to `src/generated/prisma` (committed).
+
+## Run
 
 ```bash
-# unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
+npm run build              # compile (tsconfig.build.json)
+npm run start:dev          # watch mode
+npm run start:prod         # production (node dist/main)
 ```
 
-## Deployment
+API docs available at `/docs` in `dev` mode. Health check at `/health` (bypasses prefix).
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
-
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+## Test
 
 ```bash
-$ npm install -g @nestjs/mau
-$ mau deploy
+npm run test               # unit tests (src/**/*.spec.ts)
+npm run test:e2e          # e2e tests (test/jest-e2e.json)
+npm run lint              # eslint --fix
+npm run format            # prettier --write
 ```
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+## API Routes
 
-## Resources
+All routes are prefixed (default: `api/v1`). Auth: JWT + cookie-based via `@Auth()` decorator.
 
-Check out a few resources that may come in handy when working with NestJS:
+### Auth
+- `POST /auth/login` - Login with username/password
+- `POST /auth/logout` - Logout (requires auth)
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+### Users
+- `POST /users` - Create user (ADMINISTRADOR)
+- `GET /users` - List users with pagination/filters (ADMINISTRADOR)
+- `PATCH /users/:id` - Update user (ADMINISTRADOR)
+- `PATCH /users/:id/status` - Enable/disable user (ADMINISTRADOR)
+- `GET /users/profile` - Get current user profile (auth required)
 
-## Support
+### Vehicles
+- `POST /vehicles` - Create vehicle (ADMINISTRADOR)
+- `GET /vehicles` - List vehicles with filters (ADMINISTRADOR)
+- `GET /vehicles/:placa/placa` - Get vehicle by license plate (ADMINISTRADOR)
+- `POST /vehicles/:id/assign-owner` - Assign person as owner (ADMINISTRADOR)
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+### Persons
+- `POST /persons` - Create person (ADMINISTRADOR)
+- `GET /persons` - List persons with filters (ADMINISTRADOR)
+- `PATCH /persons/:id` - Update person data (ADMINISTRADOR)
+- `PATCH /persons/:id/access-status` - Grant/revoke access (ADMINISTRADOR)
 
-## Stay in touch
+### Registrations
+- `POST /registrations/full` - Register vehicle + person + ownership in one step (ADMINISTRADOR)
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+### Access Events
+- `GET /access-events` - List access events with filters (ADMINISTRADOR, CONSULTOR)
+- `GET /access-events/recent` - Get recent events (ADMINISTRADOR, CONSULTOR)
+- `POST /access-events` - Receive camera webhook (API key auth via `ApiKeyGuard`)
 
-## License
+## WebSocket Gateway
 
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+Access events module includes a WebSocket gateway (`AccessEventsGateway`) for real-time event broadcasting.
+
+## Architecture
+
+```
+src/
+├── config/              # Env validation (Joi)
+├── core/prisma/         # Prisma service module
+├── common/
+│   ├── decorators/      # @Auth, @CurrentUser
+│   ├── guards/          # JwtAuthGuard, RolesGuard, ApiKeyGuard
+│   ├── interfaces/      # CurrentUser, JwtPayload
+│   └── pipes/           # ParseUuid pipe
+├── modules/
+│   ├── auth/            # Login/logout, JWT strategy
+│   ├── users/           # User CRUD
+│   ├── vehicles/        # Vehicle CRUD
+│   ├── persons/         # Person CRUD
+│   ├── registrations/   # Full registration
+│   └── access-events/   # Access events + WebSocket
+├── app.module.ts
+└── main.ts
+```
+
+## Data Models
+
+- **UsuarioWeb** - Web users (ADMINISTRADOR, CONSULTOR)
+- **Persona** - Campus persons (DOCENTE, ALUMNO, ADMINISTRATIVO, VISITANTE)
+- **Vehiculo** - Vehicles identified by license plate (placa)
+- **VehiculoPersona** - Vehicle-person ownership relation
+- **EventoAcceso** - Entry/exit events with OCR confidence and control point
