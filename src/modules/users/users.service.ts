@@ -11,6 +11,7 @@ import { FindUsersQueryDto } from './dto/find-users-qry.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { PrismaService } from '@/core/prisma/prisma.service';
 import { Prisma } from '@/generated/prisma/client';
+import { ProfileDto } from './dto/get-profile.dto';
 
 @Injectable()
 export class UsersService {
@@ -18,24 +19,15 @@ export class UsersService {
   constructor(private readonly prisma: PrismaService) {}
 
   async createUser(dto: CreateUserDto) {
+    const userFind = await this.prisma.usuarioWeb.findFirst({
+      where: { OR: [{ dni: dto.dni }, { username: dto.username }] },
+    });
+
+    if (userFind) {
+      throw new ConflictException('El usuario ya existe');
+    }
+
     try {
-      const userFind = await this.prisma.usuarioWeb.findFirst({
-        where: {
-          OR: [
-            {
-              dni: dto.dni,
-            },
-            {
-              username: dto.username,
-            },
-          ],
-        },
-      });
-
-      if (userFind) {
-        throw new ConflictException('Usuario existente');
-      }
-
       const salt = await bcrypt.genSalt(10);
       const pwdHash = await bcrypt.hash(dto.password, salt);
 
@@ -83,21 +75,6 @@ export class UsersService {
       }),
     ]);
 
-    //  rollbacks innesarios dx
-
-    // const [total, users] = await this.prisma.$transaction([
-    //   this.prisma.usuarioWeb.count({ where }),
-    //   this.prisma.usuarioWeb.findMany({
-    //     where,
-    //     skip,
-    //     take: limit,
-    //     orderBy: { createdAt: 'asc' },
-    //     omit: {
-    //       password: true,
-    //     },
-    //   }),
-    // ]);
-
     const lastPage = Math.ceil(total / limit);
     const next = page < lastPage ? page + 1 : null;
     const prev = page > 1 ? page - 1 : null;
@@ -119,9 +96,7 @@ export class UsersService {
   }
 
   async updateState(state: boolean, id: string) {
-    const userFind = await this.prisma.usuarioWeb.findUnique({
-      where: { id },
-    });
+    const userFind = await this.prisma.usuarioWeb.findUnique({ where: { id } });
 
     if (!userFind) {
       throw new NotFoundException('Usuario no encontrado');
@@ -129,16 +104,11 @@ export class UsersService {
 
     try {
       const userUpdated = await this.prisma.usuarioWeb.update({
-        where: {
-          id,
-        },
-        data: {
-          activo: state,
-        },
-        omit: {
-          password: true,
-        },
+        where: { id },
+        data: { activo: state },
+        omit: { password: true },
       });
+
       return userUpdated;
     } catch (error) {
       this.logger.warn('Error al actualizar usuario', error);
@@ -165,19 +135,27 @@ export class UsersService {
         where: { username: dto.username },
       });
       if (usernameExists)
-        throw new ConflictException('El username ya está en uso');
+        throw new ConflictException('El nombre de usuario ya está en uso');
     }
 
-    const userUpdate = await this.prisma.usuarioWeb.update({
-      where: { id },
-      data: dto,
-      omit: { password: true },
-    });
+    try {
+      const userUpdate = await this.prisma.usuarioWeb.update({
+        where: { id },
+        data: dto,
+        omit: { password: true },
+      });
 
-    return userUpdate;
+      return userUpdate;
+    } catch (error) {
+      this.logger.error(
+        `Ocurrio un error al actualizar usuario : ${userFind.nombre}`,
+        error,
+      );
+      throw new InternalServerErrorException('Ocurrio un error interno');
+    }
   }
 
-  async getProfile(id: string) {
+  async getProfile(id: string): Promise<ProfileDto> {
     const user = await this.prisma.usuarioWeb.findUnique({
       where: { id },
       omit: {
@@ -188,6 +166,7 @@ export class UsersService {
     if (!user) {
       throw new NotFoundException('Usuario no encontrado');
     }
+
     return user;
   }
 }

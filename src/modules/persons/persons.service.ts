@@ -22,22 +22,19 @@ export class PersonsService {
     });
 
     if (personFound) {
-      throw new ConflictException('Dni ya esta registrado');
+      throw new ConflictException('DNI ya esta registrado');
     }
 
     try {
-      const newPerson = await this.prisma.persona.create({
-        data: dto,
-      });
+      const newPerson = await this.prisma.persona.create({ data: dto });
 
       return newPerson;
     } catch (error) {
       this.logger.warn(
-        `Erro al crear la persona - ${dto.nombreCompleto}`,
+        `Error al crear la persona ${dto.nombreCompleto}`,
         error,
       );
-
-      throw new InternalServerErrorException('Error interno');
+      throw new InternalServerErrorException('Ocurrio un error interno');
     }
   }
 
@@ -61,6 +58,7 @@ export class PersonsService {
         skip,
         take: limit,
         orderBy: { createdAt: 'asc' },
+        include: { vehiculos: { include: { vehiculo: true } } },
       }),
     ]);
 
@@ -85,23 +83,20 @@ export class PersonsService {
   }
 
   async updateAccessStatus(id: string, status: boolean) {
-    const personFound = await this.prisma.persona.findUnique({
-      where: { id },
-    });
+    const personFound = await this.prisma.persona.findUnique({ where: { id } });
 
-    if (!personFound) throw new NotFoundException('Persona no encontrada');
+    if (!personFound) throw new NotFoundException('persona no encontrada');
 
     try {
       const updatedPersona = await this.prisma.persona.update({
         where: { id },
-        data: {
-          tieneAccesoPermitido: status,
-        },
+        data: { tieneAccesoPermitido: status },
       });
+
       return updatedPersona;
     } catch (error) {
-      this.logger.warn('Error al actulizar estado de la persona}', error);
-      throw new InternalServerErrorException('Error interno');
+      this.logger.error('Error al actulizar estado de la persona', error);
+      throw new InternalServerErrorException('Ocurrio un error interno');
     }
   }
 
@@ -109,7 +104,7 @@ export class PersonsService {
     const personFind = await this.prisma.persona.findUnique({ where: { id } });
 
     if (!personFind) {
-      throw new NotFoundException('Persona no econtrada');
+      throw new NotFoundException('persona no econtrada');
     }
 
     if (dto.dni && dto.dni !== personFind.dni) {
@@ -120,11 +115,16 @@ export class PersonsService {
       if (dniExists) throw new ConflictException('El DNI ya esta en uso');
     }
 
-    const personUpdate = await this.prisma.persona.update({
-      where: { id },
-      data: dto,
-    });
+    try {
+      const personUpdate = await this.prisma.persona.update({
+        where: { id },
+        data: dto,
+      });
 
-    return personUpdate;
+      return personUpdate;
+    } catch (error) {
+      this.logger.error('Error al actulizar persona', error);
+      throw new InternalServerErrorException('Ocurrio un error interno');
+    }
   }
 }

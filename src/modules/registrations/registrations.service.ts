@@ -9,7 +9,7 @@ export class RegistrationsService {
   async registerFull(dto: CreateFullRegistrationDto) {
     const { persona, vehiculo } = dto;
 
-    return this.prisma.$transaction(async (tx) => {
+    const result = await this.prisma.$transaction(async (tx) => {
       const existingVehicle = await tx.vehiculo.findUnique({
         where: { placa: vehiculo.placa },
       });
@@ -35,14 +35,6 @@ export class RegistrationsService {
         });
       } else {
         throw new BadRequestException('El dni ya esta registraddo');
-        // Opcional: Actualizar datos de la persona si ya existía
-        // personaRecord = await tx.persona.update({
-        //   where: { id: personaRecord.id },
-        //   data: {
-        //     nombreCompleto: persona.nombreCompleto,
-        //     rol: persona.rol,
-        //   },
-        // });
       }
 
       const vehiculoRecord = await tx.vehiculo.create({
@@ -62,11 +54,12 @@ export class RegistrationsService {
       });
 
       return {
-        mensaje: 'Registro y vinculación exitosos',
         persona: personaRecord,
         vehiculo: vehiculoRecord,
         vinculacionId: vinculacion.id,
       };
     });
+
+    return result;
   }
 }

@@ -8,9 +8,7 @@ RUN npm ci --legacy-peer-deps
 
 COPY . .
 
-RUN npx prisma generate
-
-RUN npm run build
+RUN npx prisma generate && npm run build
 
 FROM node:24-alpine AS production-deps
 
@@ -30,7 +28,6 @@ RUN addgroup -g 1001 -S nodejs && \
   adduser -S nestjs -u 1001
 
 WORKDIR /app
-
 
 COPY --chown=nestjs:nodejs --from=production-deps /app/node_modules ./node_modules
 COPY --chown=nestjs:nodejs --from=development /app/dist ./dist

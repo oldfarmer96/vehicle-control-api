@@ -1,4 +1,8 @@
-import { Injectable, Logger } from '@nestjs/common';
+import {
+  Injectable,
+  InternalServerErrorException,
+  Logger,
+} from '@nestjs/common';
 import { AccessEventsGateway } from './access-events.gateway';
 import { HttpService } from '@nestjs/axios';
 import { ReceiveEventDto } from './dto/receive-event.dto';
@@ -9,10 +13,15 @@ import { AxiosError } from 'axios';
 import { PrismaService } from '@/core/prisma/prisma.service';
 import { TipoEventoAcceso } from '@/generated/prisma/enums';
 import { Prisma } from '@/generated/prisma/client';
+import { toDate } from 'date-fns-tz';
+import { subDays } from 'date-fns';
+
+const TIMEZONE = 'America/Lima';
 
 @Injectable()
 export class AccessEventsService {
   private readonly logger = new Logger(AccessEventsService.name);
+
   constructor(
     private readonly prisma: PrismaService,
     private readonly httpService: HttpService,
@@ -21,14 +30,10 @@ export class AccessEventsService {
   ) {}
 
   async handleWebhook(dto: ReceiveEventDto) {
-    // const { placa, evento, confianzaOcr, puntoControl } = data;
-
-    // 1. Resolver el Vehículo (Local o API Externa)
-    // En el findUnique del handleWebhook
     let vehiculo = await this.prisma.vehiculo.findUnique({
       where: { placa: dto.placa },
       select: {
-        id: true, // ← agregar esto
+        id: true,
         personas: { include: { persona: true } },
         placa: true,
         marca: true,
@@ -41,50 +46,59 @@ export class AccessEventsService {
 
     if (!vehiculo) {
       this.logger.log(
-        `Placa ${dto.placa} no encontrada localmente. Consultando API externa...`,
+        `Placa ${dto.placa} no encontrada localmente. Consultando API`,
       );
       vehiculo = await this.fetchExternalVehicleData(dto.placa);
     }
 
-    // 2. Registrar el Evento de Acceso en la BD
-    const nuevoEvento = await this.prisma.eventoAcceso.create({
-      data: {
-        vehiculoId: vehiculo.id,
-        tipoEvento:
-          dto.evento === 'ENTRADA'
-            ? TipoEventoAcceso.ENTRADA
-            : TipoEventoAcceso.SALIDA,
-        puntoControl: dto.puntoControl,
-        confianzaOcr: dto.confianzaOcr,
-      },
-      include: {
-        vehiculo: {
-          select: {
-            placa: true,
-            marca: true,
-            modelo: true,
-            color: true,
-            personas: {
-              include: {
-                persona: { select: { nombreCompleto: true, rol: true } },
+    try {
+      const nuevoEvento = await this.prisma.eventoAcceso.create({
+        data: {
+          vehiculoId: vehiculo.id,
+          tipoEvento:
+            dto.evento === 'ENTRADA'
+              ? TipoEventoAcceso.ENTRADA
+              : TipoEventoAcceso.SALIDA,
+          puntoControl: dto.puntoControl,
+          confianzaOcr: dto.confianzaOcr,
+        },
+        include: {
+          vehiculo: {
+            select: {
+              placa: true,
+              marca: true,
+              modelo: true,
+              color: true,
+              personas: {
+                include: {
+                  persona: { select: { nombreCompleto: true, rol: true } },
+                },
               },
             },
           },
         },
-      },
-    });
+      });
 
-    // 3. Notificar al Dashboard mediante WebSocket
-    this.gateway.notifyNewEvent(nuevoEvento);
+      this.gateway.notifyNewEvent({
+        ...nuevoEvento,
+        confianzaOcr: nuevoEvento.confianzaOcr?.toNumber(),
+      });
 
-    return nuevoEvento;
+      return {
+        ...nuevoEvento,
+        confianzaOcr: nuevoEvento.confianzaOcr?.toNumber(),
+      };
+    } catch (error) {
+      this.logger.error('Error al intentar registrar el evento', error);
+      throw new InternalServerErrorException('Ocurrio un error interno');
+    }
   }
 
   private async fetchExternalVehicleData(placa: string) {
-    try {
-      const apiToken = this.configService.getOrThrow<string>('TOKEN_JSON_API');
-      const urlApi = this.configService.getOrThrow<string>('URL_PLACA_API');
+    const apiToken = this.configService.getOrThrow<string>('TOKEN_JSON_API');
+    const urlApi = this.configService.getOrThrow<string>('URL_PLACA_API');
 
+    try {
       const response = await firstValueFrom(
         this.httpService.post(
           urlApi,
@@ -104,7 +118,6 @@ export class AccessEventsService {
             vin: data.vin,
             motor: data.motor,
           },
-          // ← agregar select con personas vacías
           select: {
             id: true,
             personas: { include: { persona: true } },
@@ -129,7 +142,6 @@ export class AccessEventsService {
       }
     }
 
-    // vehiculo fantasma también con select consistente
     const vehiculoFantasma = await this.prisma.vehiculo.create({
       data: { placa, marca: 'DESCONOCIDO' },
       select: {
@@ -147,6 +159,7 @@ export class AccessEventsService {
     return vehiculoFantasma;
   }
 
+  // WARN: probar funcion
   async getAllEvents(qry: FindAccessEventsQryDto) {
     const {
       page = 1,
@@ -169,23 +182,20 @@ export class AccessEventsService {
     }
 
     if (startDate || endDate) {
-      const PET_OFFSET_HOURS = 5;
-      const now = new Date();
+      let start: Date;
+      let end: Date;
 
-      const start = startDate
-        ? new Date(
-            new Date(startDate).getTime() + PET_OFFSET_HOURS * 60 * 60 * 1000,
-          )
-        : new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
+      if (startDate) {
+        start = toDate(`${startDate}T00:00:00`, { timeZone: TIMEZONE });
+      } else {
+        start = subDays(new Date(), 30);
+      }
 
-      const end = endDate
-        ? new Date(
-            new Date(endDate).getTime() +
-              PET_OFFSET_HOURS * 60 * 60 * 1000 +
-              24 * 60 * 60 * 1000 -
-              1,
-          )
-        : new Date(now.getTime() + PET_OFFSET_HOURS * 60 * 60 * 1000);
+      if (endDate) {
+        end = toDate(`${endDate}T23:59:59.999`, { timeZone: TIMEZONE });
+      } else {
+        end = new Date();
+      }
 
       where.fechaHora = {
         gte: start,
@@ -237,7 +247,6 @@ export class AccessEventsService {
   }
 
   async getRecentEvents() {
-    // Traer las últimas 15 entradas
     const entradas = await this.prisma.eventoAcceso.findMany({
       where: { tipoEvento: 'ENTRADA' },
       orderBy: { fechaHora: 'desc' },
@@ -255,7 +264,6 @@ export class AccessEventsService {
       },
     });
 
-    // Traer las últimas 15 salidas
     const salidas = await this.prisma.eventoAcceso.findMany({
       where: { tipoEvento: 'SALIDA' },
       orderBy: { fechaHora: 'desc' },

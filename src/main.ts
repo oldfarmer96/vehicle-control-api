@@ -1,8 +1,12 @@
-import { NestFactory } from '@nestjs/core';
+import { NestFactory, Reflector } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ConfigService } from '@nestjs/config';
 import cookieParser from 'cookie-parser';
-import { Logger, ValidationPipe } from '@nestjs/common';
+import {
+  ClassSerializerInterceptor,
+  Logger,
+  ValidationPipe,
+} from '@nestjs/common';
 import helmet from 'helmet';
 import favicon from 'serve-favicon';
 import { join } from 'path';
@@ -15,7 +19,6 @@ async function bootstrap() {
     logger: ['error', 'warn', 'debug', 'log', 'fatal', 'verbose'],
   });
 
-  // app.set('trust proxy', 1);
   const expressApp = app.getHttpAdapter().getInstance();
   expressApp.set('trust proxy', 1);
 
@@ -24,14 +27,14 @@ async function bootstrap() {
 
   const cookieSecret = configService.get('COOKIE_SECRET');
 
+  app.useGlobalInterceptors(new ClassSerializerInterceptor(app.get(Reflector)));
+
   app.use(
     compression(),
     helmet(),
     rateLimit({
-      // windowMs: 15 * 60 * 1000,
-      // limit: 500,
-      windowMs: 1 * 60 * 1000,
-      limit: 5,
+      windowMs: 10 * 60 * 1000,
+      limit: 200,
       handler: (_, res) => {
         res.status(429).json({
           statusCode: 429,

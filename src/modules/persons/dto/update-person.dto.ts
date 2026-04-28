@@ -1,7 +1,6 @@
 import { RolUniversitario } from '@/generated/prisma/enums';
 import {
   IsString,
-  IsNotEmpty,
   IsEnum,
   IsOptional,
   IsBoolean,
