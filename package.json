@@ -38,6 +38,8 @@
     "class-validator": "^0.15.1",
     "compression": "^1.8.1",
     "cookie-parser": "^1.4.7",
+    "date-fns": "^4.1.0",
+    "date-fns-tz": "^3.2.0",
     "express-rate-limit": "^8.4.1",
     "helmet": "^8.1.0",
     "joi": "^18.1.2",
