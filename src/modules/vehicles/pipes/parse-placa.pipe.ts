@@ -10,17 +10,17 @@ export class ParsePlacaPipe implements PipeTransform {
     const normalizada = value.toUpperCase().trim();
 
     const formatos = [
-      /^[A-Z]{3}-\d{3}$/, // ABC-123
-      /^[A-Z]{2}-\d{4}$/, // AB-1234
-      /^[A-Z]{3}\d{3}$/, // ABC123
-      /^[A-Z]{2}\d{4}$/, // AB1234
+      /^[A-Z0-9]{3}-\d{3}$/, // ABC-123 o F7K-455
+      /^[A-Z0-9]{2}-\d{4}$/, // AB-1234
+      /^[A-Z0-9]{3}\d{3}$/, // ABC123
+      /^[A-Z0-9]{2}\d{4}$/, // AB1234
     ];
 
     const esValida = formatos.some((regex) => regex.test(normalizada));
 
     if (!esValida) {
       throw new BadRequestException(
-        'Placa inválida. Formatos aceptados: ABC-123, AB-1234, ABC123, AB1234',
+        'Placa inválida. Formatos aceptados: ABC-123, AB-1234, ABC123, AB1234 y A2C-123',
       );
     }
 

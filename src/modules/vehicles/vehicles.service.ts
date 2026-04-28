@@ -28,14 +28,12 @@ export class VehiclesService {
     }
 
     try {
-      const newVehicle = await this.prisma.vehiculo.create({
-        data: dto,
-      });
+      const newVehicle = await this.prisma.vehiculo.create({ data: dto });
 
       return newVehicle;
     } catch (error) {
       this.logger.warn(`Error al crear vehiculo: ${dto.placa}`, error);
-      throw new InternalServerErrorException('Error interno');
+      throw new InternalServerErrorException('Ocurrio un error interno');
     }
   }
 
@@ -44,12 +42,7 @@ export class VehiclesService {
     const skip = (page - 1) * limit;
 
     const where: Prisma.VehiculoWhereInput = search
-      ? {
-          placa: {
-            contains: search,
-            mode: 'insensitive',
-          },
-        }
+      ? { placa: { contains: search, mode: 'insensitive' } }
       : {};
 
     const [total, vehicles] = await Promise.all([
@@ -59,6 +52,7 @@ export class VehiclesService {
         skip,
         take: limit,
         orderBy: { createdAt: 'asc' },
+        include: { personas: { include: { persona: true } } },
       }),
     ]);
 
@@ -85,6 +79,13 @@ export class VehiclesService {
   async getVehicleByPlaca(placa: string) {
     const vehicle = await this.prisma.vehiculo.findUnique({
       where: { placa },
+      include: {
+        personas: {
+          include: {
+            persona: true,
+          },
+        },
+      },
     });
 
     if (!vehicle) {
@@ -102,9 +103,7 @@ export class VehiclesService {
     });
 
     if (!vehiculo) {
-      throw new NotFoundException(
-        `El vehículo con ID ${vehiculoId} no existe.`,
-      );
+      throw new NotFoundException('El vehículo no existe.');
     }
 
     const persona = await this.prisma.persona.findUnique({
@@ -112,7 +111,7 @@ export class VehiclesService {
     });
 
     if (!persona) {
-      throw new NotFoundException(`La persona con ID ${personaId} no existe.`);
+      throw new NotFoundException('La persona no existe.');
     }
 
     const vinculacionExistente = await this.prisma.vehiculoPersona.findUnique({
@@ -130,31 +129,33 @@ export class VehiclesService {
       );
     }
 
-    const nuevaVinculacion = await this.prisma.vehiculoPersona.create({
-      data: {
-        vehiculoId: vehiculoId,
-        personaId: personaId,
-      },
-      include: {
-        persona: {
-          select: {
-            dni: true,
-            nombreCompleto: true,
-            rol: true,
+    try {
+      const nuevaVinculacion = await this.prisma.vehiculoPersona.create({
+        data: {
+          vehiculoId: vehiculoId,
+          personaId: personaId,
+        },
+        include: {
+          persona: {
+            select: {
+              dni: true,
+              nombreCompleto: true,
+              rol: true,
+            },
+          },
+          vehiculo: {
+            select: {
+              placa: true,
+              marca: true,
+            },
           },
         },
-        vehiculo: {
-          select: {
-            placa: true,
-            marca: true,
-          },
-        },
-      },
-    });
+      });
 
-    return {
-      mensaje: 'Propietario asignado correctamente al vehículo',
-      vinculacion: nuevaVinculacion,
-    };
+      return nuevaVinculacion;
+    } catch (error) {
+      this.logger.error('Error al vincular vehiculo', error);
+      throw new InternalServerErrorException('Ocurrio un error interno');
+    }
   }
 }
