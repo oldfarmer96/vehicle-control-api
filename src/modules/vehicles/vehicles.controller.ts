@@ -30,6 +30,12 @@ export class VehiclesController {
     return this.vehicleService.getVehicleByPlaca(placa);
   }
 
+  @Get(':placa/search-api')
+  @Auth(RolWeb.ADMINISTRADOR)
+  searchVehicleApi(@Param('placa', ParsePlacaPipe) placa: string) {
+    return this.vehicleService.searchVehicleApi(placa);
+  }
+
   @Post(':id/assign-owner')
   @Auth(RolWeb.ADMINISTRADOR)
   assignOwner(
