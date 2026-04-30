@@ -231,7 +231,10 @@ export class AccessEventsService {
     const lastPage = Math.ceil(total / limit);
 
     return {
-      data: events,
+      data: events.map((e) => ({
+        ...e,
+        confianzaOcr: e.confianzaOcr?.toNumber(),
+      })),
       meta: {
         total,
         isEmpty: total === 0,
@@ -282,8 +285,14 @@ export class AccessEventsService {
     });
 
     return {
-      entrada: entradas,
-      salida: salidas,
+      entrada: entradas.map((e) => ({
+        ...e,
+        confianzaOcr: e.confianzaOcr?.toNumber(),
+      })),
+      salida: salidas.map((s) => ({
+        ...s,
+        confianzaOcr: s.confianzaOcr?.toNumber(),
+      })),
     };
   }
 }
