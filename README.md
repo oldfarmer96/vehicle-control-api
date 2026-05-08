@@ -87,6 +87,17 @@ All routes are prefixed (default: `api/v1`). Auth: JWT + cookie-based via `@Auth
 - `GET /access-events/recent` - Get recent events (ADMINISTRADOR, CONSULTOR)
 - `POST /access-events` - Receive camera webhook (API key auth via `ApiKeyGuard`)
 
+### Reports
+- `GET /reports/summary/entrada` - Summary of entries by period
+- `GET /reports/summary/salida` - Summary of exits by period
+- `GET /reports/by-vehicle/entrada` - Most active vehicles (entries)
+- `GET /reports/by-vehicle/salida` - Most active vehicles (exits)
+- `GET /reports/by-role/entrada` - Access by role (entries)
+- `GET /reports/by-role/salida` - Access by role (exits)
+- `GET /reports/events` - Detailed events with pagination
+
+See `REPORTS_API.md` for full documentation.
+
 ## WebSocket Gateway
 
 Access events module includes a WebSocket gateway (`AccessEventsGateway`) for real-time event broadcasting.
@@ -108,7 +119,8 @@ src/
 │   ├── vehicles/        # Vehicle CRUD
 │   ├── persons/         # Person CRUD
 │   ├── registrations/   # Full registration
-│   └── access-events/   # Access events + WebSocket
+│   ├── access-events/   # Access events + WebSocket
+│   └── reports/         # Reports and analytics
 ├── app.module.ts
 └── main.ts
 ```
