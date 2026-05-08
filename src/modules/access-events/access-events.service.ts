@@ -176,7 +176,6 @@ export class AccessEventsService {
     if (search) {
       where.vehiculo = { placa: { contains: search, mode: 'insensitive' } };
     }
-
     if (tipoEvento) {
       where.tipoEvento = tipoEvento;
     }
